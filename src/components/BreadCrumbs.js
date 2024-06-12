@@ -10,7 +10,7 @@ export const BreadCrumbs = ({ crumbs }) => {
   }
 
   const MobileCrumb = () => (
-    <Link href={mobileCrumb.path} className="leading-tight">
+    <Link href={mobileCrumb.path} className="leading-tight" legacyBehavior>
       <a>
         <span className="mx-1 text-blue-600">&lt;- {mobileCrumb.name}</span>
       </a>
@@ -22,7 +22,7 @@ export const BreadCrumbs = ({ crumbs }) => {
       <div className="flex items-center">
         <span className="mx-1">/</span>
         {crumb.isLink ? (
-          <Link href={crumb.path} className="leading-tight">
+          <Link href={crumb.path} className="leading-tight" legacyBehavior>
             <a>
               <span className="mx-1 text-blue-600">{crumb.name}</span>
             </a>
@@ -39,7 +39,7 @@ export const BreadCrumbs = ({ crumbs }) => {
   return (
     <div className="text-sm font-medium text-gray-500">
       <div className="items-center hidden sm:flex">
-        <Link href="/">
+        <Link href="/" legacyBehavior>
           <a aria-label="home page icon">
             <HomeIcon />
           </a>

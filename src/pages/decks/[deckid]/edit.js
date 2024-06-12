@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { getSession } from 'next-auth/client'
 import axios from 'axios'
 
 import { DeckForm } from '@/components/DeckForm'
@@ -32,16 +31,6 @@ const EditDeckPage = ({ deck }) => {
 export default EditDeckPage
 
 export async function getServerSideProps({ req, res, params }) {
-  const session = await getSession({ req })
-
-  if (!session) {
-    res.writeHead(302, {
-      Location: '/',
-    })
-    res.end()
-    return { props: {} }
-  }
-
   const deck = await getDeck({ id: params.deckid })
   delete deck.topic
   delete deck.subTopic

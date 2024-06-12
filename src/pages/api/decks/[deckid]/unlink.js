@@ -1,5 +1,3 @@
-import { getSession } from 'next-auth/client'
-
 import { updateUser } from '@/lib/data'
 
 //------------------------------------------------------------------------------
@@ -9,13 +7,7 @@ const handler = async (req, res) => {
   const deckId = req.query.deckid
 
   if (req.method === 'POST') {
-    const session = await getSession({ req })
-
-    if (!session) {
-      return res.status(401).send('Unauthorized')
-    }
-
-    await updateUser(session.user.id, { unlink: { deckId } })
+    await updateUser(req.body.user.id, { unlink: { deckId } })
 
     return res.status(200).json({})
   }

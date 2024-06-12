@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { signOut, useSession } from 'next-auth/client'
+import { signOut, useSession } from 'next-auth/react'
 
 import { useUser } from '@/hooks/useUser'
 import { Decks } from '@/components/Decks'
@@ -11,8 +11,9 @@ import { NotAuthorized } from '@/components/NotAuthorized'
 
 const DashboardPage = () => {
   const router = useRouter()
-  const [session] = useSession()
+  const { data: session, status } = useSession()
   const { user, isLoading } = useUser(session)
+  console.log(user)
 
   if (!session) {
     return <NotAuthorized />
@@ -48,7 +49,7 @@ const DashboardPage = () => {
               Sign out
             </button>
           </div>
-          <Link href="/decks/create">
+          <Link href="/decks/create" legacyBehavior>
             <a className="inline-flex flex-none items-center px-3 py-1.5 text-base font-semibold text-white bg-blue-700 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-800">
               Create
             </a>

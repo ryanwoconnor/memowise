@@ -51,7 +51,7 @@ export const Topics = ({ topics }) => {
         <p className={`mb-8 font-medium ${colors[colorIdx].text} text-shadow`}>
           {topic.description}
         </p>
-        <Link href={`/browse/${encodeURIComponent(topic.slug)}`}>
+        <Link href={`/browse/${encodeURIComponent(topic.slug)}`} legacyBehavior>
           <a
             className={`inline-flex items-center px-4 py-2 font-semibold ${colors[colorIdx].bg} rounded-lg bg-opacity-50 hover:bg-opacity-90 focus:outline-none focus:bg-opacity-90`}
           >

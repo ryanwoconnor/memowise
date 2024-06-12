@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { signIn } from 'next-auth/client'
+import { signIn } from 'next-auth/react'
 
 import { Container } from './Container'
 
@@ -20,7 +20,7 @@ export const NotAuthorized = () => {
             Sign in
           </button>{' '}
           or return to{' '}
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a className="text-blue-600">Home Page.</a>
           </Link>
         </p>

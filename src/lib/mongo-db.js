@@ -6,6 +6,8 @@ import { connectToDB } from '@/utils/connectToDB'
 import { transformObjectId } from '@/utils/transformObjectId'
 import { transformEasyFactor } from '@/utils/transformEasyFactor'
 import { registerTransformers } from '@/utils/registerTransformers'
+import { da } from 'date-fns/locale'
+import mongoose from 'mongoose'
 
 //------------------------------------------------------------------------------
 // MongoDB specific data layer.
@@ -47,66 +49,78 @@ export const deleteDeck = async (deckId) => {
 
 export const getUser = async (userId) => {
   await connectToDB()
-
-  const user = await User.findById(userId)
+  const user = await User.findOne({ userId: userId })
     .populate('decks.linked')
     .populate('decks.created')
 
-  return user.toObject({
-    transform: registerTransformers([transformObjectId, transformEasyFactor]),
-  })
+  if (user) {
+    return user.toObject({
+      transform: registerTransformers([transformObjectId, transformEasyFactor]),
+    })
+  } else {
+    return null
+  }
 }
 
 export const updateUser = async (userId, data) => {
   await connectToDB()
 
-  const user = await User.findById(userId)
-  user.decks = user.decks ?? { created: [], linked: [], studied: [] }
+  const user = await User.findOne({ userId: userId })
 
-  if (data?.created) {
-    user.decks.created.push(data.created)
-  }
+  if (user) {
+    user.decks = user.decks ?? { created: [], linked: [], studied: [] }
 
-  if (data?.linked) {
-    user.decks.linked.push(data.linked)
-  }
+    if (data?.created) {
+      user.decks.created.push(data.created)
+    }
 
-  if (data?.studied) {
-    const studiedDeck = user.decks.studied.find(
-      (sd) => sd.deckId.toString() === data.studied.deckId
-    )
+    if (data?.linked) {
+      user.decks.linked.push(data.linked)
+    }
 
-    if (studiedDeck) {
-      let cardIdx = studiedDeck.cards.findIndex(
-        (sc) => sc.cardId.toString() === data.studied.card.cardId
+    if (data?.studied) {
+      const studiedDeck = user.decks.studied.find(
+        (sd) => sd.deckId.toString() === data.studied.deckId
       )
 
-      if (cardIdx !== -1) {
-        studiedDeck.cards.splice(cardIdx, 1, data.studied.card)
+      if (studiedDeck) {
+        let cardIdx = studiedDeck.cards.findIndex(
+          (sc) => sc.cardId.toString() === data.studied.card.cardId
+        )
+
+        if (cardIdx !== -1) {
+          studiedDeck.cards.splice(cardIdx, 1, data.studied.card)
+        } else {
+          studiedDeck.cards.push(data.studied.card)
+        }
       } else {
-        studiedDeck.cards.push(data.studied.card)
+        user.decks.studied.push({
+          deckId: data.studied.deckId,
+          cards: [data.studied.card],
+        })
       }
-    } else {
-      user.decks.studied.push({
-        deckId: data.studied.deckId,
-        cards: [data.studied.card],
-      })
     }
-  }
 
-  if (data?.unlink) {
-    user.decks.linked = user.decks.linked.filter(
-      (deckId) => deckId.toString() !== data.unlink.deckId
-    )
-  }
+    if (data?.unlink) {
+      user.decks.linked = user.decks.linked.filter(
+        (deckId) => deckId.toString() !== data.unlink.deckId
+      )
+    }
 
-  if (data?.remove) {
-    user.decks.created = user.decks.created.filter(
-      (deckId) => deckId !== data.remove.deckId
-    )
-  }
+    if (data?.remove) {
+      user.decks.created = user.decks.created.filter(
+        (deckId) => deckId !== data.remove.deckId
+      )
+    }
 
-  return user.save()
+    return user.save()
+  } else {
+    await User.create({
+      _id: mongoose.Types.ObjectId(Number(userId)),
+      userId: userId,
+    })
+    updateUser(userId, data)
+  }
 }
 
 export const getTopic = async (filter = {}) => {

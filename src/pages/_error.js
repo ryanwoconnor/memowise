@@ -20,7 +20,7 @@ const Error = ({ title, statusCode }) => {
           <p className="text-xl font-normal text-gray-500">{errorMessage}.</p>
           <p className="text-xl font-normal text-gray-500">
             Return to{' '}
-            <Link href="/">
+            <Link href="/" legacyBehavior>
               <a className="text-blue-600">Home Page.</a>
             </Link>
           </p>

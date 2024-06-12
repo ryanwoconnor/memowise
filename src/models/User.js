@@ -48,11 +48,13 @@ const userDecksSchema = new mongoose.Schema(
       },
     ],
   },
-  { _id: false }
+  { _id: false },
+  { userId: '' }
 )
 
 const userSchema = new mongoose.Schema({
   name: String,
+  userId: String,
   image: String,
   decks: {
     type: userDecksSchema,

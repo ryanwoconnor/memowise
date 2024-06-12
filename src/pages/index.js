@@ -53,7 +53,7 @@ const HomePage = ({ topics, numDecks }) => {
             Check out all the decks Memowise has to offer - from Spanish terms
             to programming concepts and cooking skills.
           </p>
-          <Link href="/browse">
+          <Link href="/browse" legacyBehavior>
             <a className="inline-flex items-center px-4 py-2 font-semibold bg-gray-800 rounded-lg bg-opacity-50 hover:bg-opacity-90 focus:outline-none focus:bg-opacity-90">
               Explore all sets
             </a>

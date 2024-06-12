@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/client'
+import { useSession } from 'next-auth/react'
 import axios from 'axios'
 
 import { Container } from '@/components/Container'
@@ -14,7 +14,7 @@ import { getDeck, getDeckList } from '@/lib/data'
 
 const DeckPage = ({ deck }) => {
   const router = useRouter()
-  const [session] = useSession()
+  const { data: session, status } = useSession()
   const { user } = useUser(session)
   const topic = deck?.topic
   const subTopic = deck?.subTopic
@@ -42,7 +42,7 @@ const DeckPage = ({ deck }) => {
         ]
       : []
   const handleDelete = async () => {
-    await axios.delete(`/api/decks/${deck.id}`)
+    await axios.delete({ url: `/api/decks/${deck.id}`, data: session.user })
     router.back()
   }
 
@@ -63,7 +63,7 @@ const DeckPage = ({ deck }) => {
           </h1>
           {isEditable && (
             <div className="flex items-center space-x-2">
-              <Link href={`/decks/${deck.id}/edit`}>
+              <Link href={`/decks/${deck.id}/edit`} legacyBehavior>
                 <a>
                   <PencilIcon className="w-6 h-6" />
                 </a>
@@ -81,7 +81,7 @@ const DeckPage = ({ deck }) => {
       <Container>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-gray-900 ">Flashcards</h2>
-          <Link href={`/decks/${deck.id}/quiz`}>
+          <Link href={`/decks/${deck.id}/quiz`} legacyBehavior>
             <a className="inline-flex items-center px-3 py-1.5 font-semibold text-white bg-gray-900 text-md rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 hover:bg-gray-700">
               Take Quiz
             </a>

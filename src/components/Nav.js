@@ -1,19 +1,20 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { signIn, useSession } from 'next-auth/client'
+import { signIn, useSession } from 'next-auth/react'
 
 export const Nav = () => {
-  const [session] = useSession()
+  const { data: session, status } = useSession()
 
   const SignInButton = () => (
     <button
-      onClick={() => signIn()}
+      onClick={() => signIn('github', { callbackUrl: '/' })}
       className="inline-flex items-center px-3 py-1.5 text-base font-semibold text-white bg-gray-900 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
       aria-label="sign-in button"
     >
       Sign in
     </button>
   )
+  console.log(session)
 
   const UserAvatar = () => (
     <Link href="/dashboard">
@@ -33,7 +34,7 @@ export const Nav = () => {
     <nav>
       <div className="flex items-center justify-between py-6 border-b border-gray-200">
         <div>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a className="text-lg font-semibold tracking-wide">memowise</a>
           </Link>
         </div>
